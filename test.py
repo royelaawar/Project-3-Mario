@@ -3,13 +3,14 @@ from pygame.locals import *
 
 pygame.init()
 
-screen_width = 1300
-screen_height = 1000
+screen_width = 1600
+screen_height = 900
 
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Platformer')
 
 bg_img = pygame.image.load('images/sky2.png')
+sun_img = pygame.image.load('images/sun.png')
 
 run = True
 while run:
@@ -19,6 +20,7 @@ while run:
 
     # Blit the background image onto the screen
     screen.blit(bg_img, (0, 0))
+    screen.blit(sun_img, (1000, 2))
 
     # Update the display
     pygame.display.flip()
