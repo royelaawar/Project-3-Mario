@@ -10,7 +10,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Platformer')
 
 bg_img = pygame.image.load('images/sky-4.png')
-sun_img = pygame.image.load('images/bomb.png')
+sun_img = pygame.image.load('images/sun2.png')
 
 run = True
 while run:
