@@ -7,10 +7,10 @@ screen_width = 1600
 screen_height = 900
 
 screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption('Platformer')
+pygame.display.set_caption('P3-P-Game')
 
-bg_img = pygame.image.load('images/sky-4.png')
-sun_img = pygame.image.load('images/sun2.png')
+bg_img = pygame.image.load('images/sky2.png')
+# sun_img = pygame.image.load('images/sun2.png')
 
 run = True
 while run:
@@ -20,9 +20,9 @@ while run:
 
     # Blit the background image onto the screen
     screen.blit(bg_img, (0, 0))
-    screen.blit(sun_img, (1300, 50))
+    # screen.blit(sun_img, (1300, 50))
 
     # Update the display
-    pygame.display.flip()
+    pygame.display.update()
 
 pygame.quit()
