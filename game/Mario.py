@@ -16,8 +16,9 @@ pygame.display.set_caption('Mario')
 #define game variables
 tile_size = 50
 game_over = 0
-#load images
+main_menu = True
 
+#load images
 bg_img = pygame.image.load('game/img/sky.png')
 restart_img = pygame.image.load('game/img/restart.png')
 start_img = pygame.image.load('game/img/start.png')
@@ -57,6 +58,7 @@ class Button():
 class Player():
     def __init__(self, x, y):
        self.reset(x, y)
+       
 
     def update(self, game_over):
         dx = 0
@@ -99,15 +101,23 @@ class Player():
                         self.vel_y = 0
                         self.in_air = False
 
+            #check for collisions w/ enemies
             if pygame.sprite.spritecollide(self, enemy_group, False):
                 game_over = -1
+            #check for collisions w/ spikes and lava
+            if pygame.sprite.spritecollide(self, spike_group, False):
+                game_over = -1
+            if pygame.sprite.spritecollide(self, lava_group, False):
+                game_over = -1
+            
 
             #update player coordinates
             self.rect.x += dx
             self.rect.y += dy
 
         elif game_over == -1:
-            self.image = self.image
+            dead_image = pygame.image.load('game/img/ghost.png')
+            self.image = pygame.transform.scale(dead_image, (65, 90))
             self.rect.y -= 5
 
         #draw player onto the screen
@@ -131,7 +141,7 @@ class World():
         self.tile_list = []
 
         #load images
-        grass_img = pygame.image.load('game/img/dirt.png')
+        grass_img = pygame.image.load('game/img/ground_grassy_1.png')
         brick_img = pygame.image.load('game/img/brick.png')
         cactus_img = pygame.image.load('game/img/cactus.png')
 
@@ -163,6 +173,13 @@ class World():
                 if tile == 4:
                     enemy = Enemy(col_count * tile_size, row_count * tile_size - 22)
                     enemy_group.add(enemy)
+                if tile == 6:
+                    spike = Spike(col_count * tile_size, row_count * tile_size + (tile_size // 2))
+                    spike_group.add(spike)
+                if tile == 8:
+                    lava = Lava(col_count * tile_size, row_count * tile_size + (tile_size // 2))
+                    lava_group.add(lava)
+                    
                 col_count += 1
             row_count += 1
 
@@ -191,13 +208,34 @@ class Enemy(pygame.sprite.Sprite):
             self.move_direction *= -1
             self.move_counter *= -1
 
+class Spike(pygame.sprite.Sprite):
+   def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        img = pygame.image.load('game/img/spike_1.png')
+        self.image = pygame.transform.scale(img, (tile_size, tile_size // 2))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+class Lava(pygame.sprite.Sprite):
+   def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        img = pygame.image.load('game/img/lava_1.png')
+        self.image = pygame.transform.scale(img, (tile_size, tile_size // 2))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        
+        
+        
+
 world_data = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 1],
+    [1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 2, 2, 1],
-    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 5, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 4, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 7, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 7, 0, 2, 0, 0, 1],
@@ -208,16 +246,17 @@ world_data = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 7, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 6, 6, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 6, 6, 1, 1, 8, 8, 8, 1],
     [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
 player = Player(100, screen_height - 130)
 
 enemy_group = pygame.sprite.Group()
-
+spike_group = pygame.sprite.Group()
+lava_group = pygame.sprite.Group()
 world = World(world_data)
 
 restart_button = Button(screen_width // 2 - 250, screen_height // 2 - 100, game_over_img)
@@ -230,23 +269,27 @@ while run:
     clock.tick(fps)
     screen.blit(bg_img, (0, 0))
     
-    stop_button.draw()
-    start_button.draw()
-    
-    world.draw()
-    
-    if game_over == 0:
+    if main_menu == True:
+        if stop_button.draw():
+            run = False
+        if start_button.draw():
+            main_menu = False
+    else:
+        world.draw()
+        
+        if game_over == 0:
+            enemy_group.update()
+
         enemy_group.update()
+        enemy_group.draw(screen)
+        spike_group.draw(screen)
+        lava_group.draw(screen)
+        game_over = player.update(game_over)
 
-    enemy_group.update()
-    enemy_group.draw(screen)
-
-    game_over = player.update(game_over)
-
-    if game_over == -1:
-        if restart_button.draw():
-            player.reset(100, screen_height - 130)
-            game_over = 0
+        if game_over == -1:
+            if restart_button.draw():
+                player.reset(100, screen_height - 130)
+                game_over = 0
 
 # draw_grid()
 
