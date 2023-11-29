@@ -13,10 +13,17 @@ screen_height = 1000
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Mario')
 
+#define font + font colors
+game_over_font = pygame.font.SysFont('Bauhaus 93', 80)
+font_score = pygame.font.SysFont('Bauhaus 93', 40)
+white = (255, 255, 255)
+red = (255, 0, 0)
+
 #define game variables
 tile_size = 50
 game_over = 0
 main_menu = True
+score = 0
 
 #load images
 bg_img = pygame.image.load('game/img/sky.png')
@@ -25,6 +32,10 @@ start_img = pygame.image.load('game/img/start.png')
 stop_img = pygame.image.load('game/img/stop.png')
 game_over_img = pygame.image.load('game/img/game_over_alt.png')
 
+## renders text on screen as image
+def draw_text(text, font, text_col, x, y):
+    img = font.render(text, True, text_col)
+    screen.blit(img, (x, y))
 
 class Button():
     def __init__(self, x, y, image):
@@ -176,8 +187,11 @@ class World():
                 if tile == 6:
                     spike = Spike(col_count * tile_size, row_count * tile_size + (tile_size // 2))
                     spike_group.add(spike)
+                if tile == 7:
+                    coin = Coin(col_count * tile_size + (tile_size // 2), row_count * tile_size + (tile_size // 2))
+                    coin_group.add(coin)
                 if tile == 8:
-                    lava = Lava(col_count * tile_size, row_count * tile_size + (tile_size // 2))
+                    lava = Lava(col_count * tile_size, row_count * tile_size )
                     lava_group.add(lava)
                     
                 col_count += 1
@@ -221,12 +235,20 @@ class Lava(pygame.sprite.Sprite):
    def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         img = pygame.image.load('game/img/lava_1.png')
-        self.image = pygame.transform.scale(img, (tile_size, tile_size // 2))
+        self.image = pygame.transform.scale(img, (tile_size, tile_size ))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         
-        
+class Coin(pygame.sprite.Sprite):
+   def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        img = pygame.image.load('game/img/coin_gold.png')
+        self.image = pygame.transform.scale(img, (tile_size, tile_size))
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+
+      
         
 
 world_data = [
@@ -252,17 +274,23 @@ world_data = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
+## player instance
 player = Player(100, screen_height - 130)
-
+## sprite groups
 enemy_group = pygame.sprite.Group()
 spike_group = pygame.sprite.Group()
 lava_group = pygame.sprite.Group()
+coin_group = pygame.sprite.Group()
 world = World(world_data)
-
+## interface buttons
 restart_button = Button(screen_width // 2 - 250, screen_height // 2 - 100, game_over_img)
 start_button = Button(screen_width // 2 - 350, screen_height // 2 - 100, start_img)
 stop_button = Button(screen_width // 2 , screen_height // 2 - 100, stop_img)
+score_count_coin = Coin(tile_size // 2, tile_size // 2)
+coin_group.add(score_count_coin)
 
+
+### GAME LOOP
 run = True
 while run:
 
@@ -279,10 +307,14 @@ while run:
         
         if game_over == 0:
             enemy_group.update()
-
+            if pygame.sprite.spritecollide(player, coin_group, True):
+                score += 1
+            draw_text('X ' + str(score), font_score, white, ((tile_size // 2) + 15), ((tile_size // 2) - 10))
+            
         enemy_group.update()
         enemy_group.draw(screen)
         spike_group.draw(screen)
+        coin_group.draw(screen)
         lava_group.draw(screen)
         game_over = player.update(game_over)
 
@@ -290,6 +322,7 @@ while run:
             if restart_button.draw():
                 player.reset(100, screen_height - 130)
                 game_over = 0
+                score = 0
 
 # draw_grid()
 
