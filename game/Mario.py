@@ -20,10 +20,19 @@ game_over = 0
 
 bg_img = pygame.image.load('game/img/sky.png')
 restart_img = pygame.image.load('game/img/restart.png')
+start_img = pygame.image.load('game/img/start.png')
+stop_img = pygame.image.load('game/img/stop.png')
+game_over_img = pygame.image.load('game/img/game_over_alt.png')
+
 
 class Button():
     def __init__(self, x, y, image):
         self.image = image
+        #scaling the original images down to 1/4 size
+        original_size = self.image.get_size()
+        new_size = (original_size[0] // 2, original_size[1] // 2) 
+        scaled_image = pygame.transform.scale(self.image, new_size)
+        self.image = scaled_image
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -57,7 +66,7 @@ class Player():
        
             key = pygame.key.get_pressed()
             if key[pygame.K_SPACE] and self.jumped == False and self.in_air == False:
-                self.vel_y = -15
+                self.vel_y = -30
                 self.jumped = True
             if key[pygame.K_SPACE] == False:
                 self.jumped = False
@@ -211,13 +220,18 @@ enemy_group = pygame.sprite.Group()
 
 world = World(world_data)
 
-restart_button = Button (screen_width // 2 - 350, screen_height // 2 -200, restart_img)
+restart_button = Button(screen_width // 2 - 250, screen_height // 2 - 100, game_over_img)
+start_button = Button(screen_width // 2 - 350, screen_height // 2 - 100, start_img)
+stop_button = Button(screen_width // 2 , screen_height // 2 - 100, stop_img)
 
 run = True
 while run:
 
     clock.tick(fps)
     screen.blit(bg_img, (0, 0))
+    
+    stop_button.draw()
+    start_button.draw()
     
     world.draw()
     
@@ -234,7 +248,7 @@ while run:
             player.reset(100, screen_height - 130)
             game_over = 0
 
-    # draw_grid()
+# draw_grid()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
