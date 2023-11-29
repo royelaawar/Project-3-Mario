@@ -31,6 +31,7 @@ restart_img = pygame.image.load('game/img/restart.png')
 start_img = pygame.image.load('game/img/start.png')
 stop_img = pygame.image.load('game/img/stop.png')
 game_over_img = pygame.image.load('game/img/game_over_alt.png')
+game_title_img = pygame.image.load('game/img/game_title.png')
 
 ## renders text on screen as image
 def draw_text(text, font, text_col, x, y):
@@ -282,10 +283,12 @@ spike_group = pygame.sprite.Group()
 lava_group = pygame.sprite.Group()
 coin_group = pygame.sprite.Group()
 world = World(world_data)
+
 ## interface buttons
+game_title = Button(screen_width // 2 - 150, screen_height // 2 - 375, game_title_img)
 restart_button = Button(screen_width // 2 - 250, screen_height // 2 - 100, game_over_img)
-start_button = Button(screen_width // 2 - 350, screen_height // 2 - 100, start_img)
-stop_button = Button(screen_width // 2 , screen_height // 2 - 100, stop_img)
+start_button = Button(screen_width // 2 - 350, screen_height // 2 - 50, start_img)
+stop_button = Button(screen_width // 2 , screen_height // 2 - 50, stop_img)
 score_count_coin = Coin(tile_size // 2, tile_size // 2)
 coin_group.add(score_count_coin)
 
@@ -298,6 +301,7 @@ while run:
     screen.blit(bg_img, (0, 0))
     
     if main_menu == True:
+        game_title.draw()
         if stop_button.draw():
             run = False
         if start_button.draw():
