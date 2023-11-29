@@ -270,7 +270,7 @@ world_data = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 6, 6, 1, 1, 8, 8, 8, 1],
     [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
@@ -318,7 +318,9 @@ while run:
         lava_group.draw(screen)
         game_over = player.update(game_over)
 
+        ## if player has died
         if game_over == -1:
+            # draw_text('GAME OVER!', game_over_font, red, (screen_width // 2) - 250, (screen_width // 2))
             if restart_button.draw():
                 player.reset(100, screen_height - 130)
                 game_over = 0
