@@ -19,6 +19,19 @@ tile_size = 50
 
 bg_img = pygame.image.load('game/img/sky.png')
 
+
+class Button():
+    #btn class constructor
+    def __init__(self, x, y, image):
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+    #draw button
+    def draw(self):
+        screen.blit(self.image, self.rect)
+
+
 class Player():
     def __init__(self, x, y):
         img = pygame.image.load('game/img/roy.png')
@@ -173,6 +186,8 @@ player = Player(100, screen_height - 130)
 enemy_group = pygame.sprite.Group()
 
 world = World(world_data)
+
+
 
 run = True
 while run:
