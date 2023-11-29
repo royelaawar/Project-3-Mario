@@ -5,22 +5,30 @@ Mario Game by Pygame
 Welcome to the our game project! This simple version Mario game of us is built using the Pygame library in Python. Have fun playing the character, avoiding obstacles, and navigating through different maps.
 
 # Prerequisites
+
 Make sure you have Python and Pygame installed on your system.
 
-```pip install pygame```
+````
+pip install pygame
+````
 
 # How to Play
+
 Run the Mario.py script to start the game.
 
-```Mario.py```
+````
+Mario.py
+````
 
 # Use the arrow keys to move Mario:
 
-```Left arrow: Move left```
+````
+Left arrow: Move left
 
-```Right arrow: Move right```
+Right arrow: Move right
 
-```Space Bar: Jump```
+Space Bar: Jump
+````
 
 Navigate through the level, avoiding lava, spikes, and monsters.
 
