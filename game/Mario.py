@@ -32,10 +32,10 @@ levels = [
     [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 1],
+    [1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 2, 2, 1],
     [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 4, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 7, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 7, 0, 0, 0, 0, 1],
@@ -75,6 +75,7 @@ levels = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ],
 ]
+
 #load images
 bg_img = pygame.image.load('game/img/sky.png')
 restart_img = pygame.image.load('game/img/restart.png')
@@ -129,7 +130,7 @@ class Player():
        
             key = pygame.key.get_pressed()
             if key[pygame.K_SPACE] and self.jumped == False and self.in_air == False:
-                self.vel_y = -20
+                self.vel_y = -30
                 self.jumped = True
             if key[pygame.K_SPACE] == False:
                 self.jumped = False
@@ -162,15 +163,20 @@ class Player():
                         self.vel_y = 0
                         self.in_air = False
 
+            ##COLLISIONS:
             #check for collisions w/ enemies
             if pygame.sprite.spritecollide(self, enemy_group, False):
                 game_over = -1
+                
             #check for collisions w/ spikes and lava
             if pygame.sprite.spritecollide(self, spike_group, False):
                 game_over = -1
             if pygame.sprite.spritecollide(self, lava_group, False):
                 game_over = -1
-            
+                
+            ## collision w/ exit sprite moves char to next level
+            if pygame.sprite.spritecollide(self, exit_group, False):
+                game_over = 1
 
             #update player coordinates
             self.rect.x += dx
@@ -357,6 +363,7 @@ while run:
         spike_group.draw(screen)
         coin_group.draw(screen)
         lava_group.draw(screen)
+        exit_group.draw(screen)
         game_over = player.update(game_over)
 
         ## if player has died
@@ -366,6 +373,16 @@ while run:
                 player.reset(100, screen_height - 130)
                 game_over = 0
                 score = 0
+        if game_over == 1:
+            current_level += 1
+            if current_level < len(levels):
+                # Load the next level
+                world = World(levels[current_level])
+                player.reset(100, screen_height - 130)
+                game_over = 0
+            else:
+                # The player has completed all levels, you can handle this as needed
+                run = False
 
 # draw_grid()
 
