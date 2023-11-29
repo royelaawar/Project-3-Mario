@@ -101,6 +101,7 @@ class Button():
         self.rect.x = x
         self.rect.y = y
         self.clicked = False
+
     
     def draw(self):
         action = False
