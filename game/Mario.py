@@ -1,7 +1,11 @@
 import pygame
 from pygame.locals import *
 from pygame.sprite import Group
+from pygame import mixer
 
+
+pygame.mixer.pre_init(44100, -16, 10, 512)
+mixer.init()
 pygame.init()
 
 clock = pygame.time.Clock()
@@ -84,6 +88,14 @@ stop_img = pygame.image.load('game/img/stop.png')
 game_over_img = pygame.image.load('game/img/game_over_alt.png')
 game_title_img = pygame.image.load('game/img/game_title.png')
 
+#load sounds
+jump_fx = pygame.mixer.Sound('game/sound/jump.flac')
+jump_fx.set_volume(0.5)
+coin_fx = pygame.mixer.Sound('game/sound/coin.wav')
+coin_fx.set_volume(0.5)
+dead_fx = pygame.mixer.Sound('game/sound/dead.wav')
+dead_fx.set_volume(0.7)
+
 ## renders text on screen as image
 def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
@@ -131,6 +143,7 @@ class Player():
        
             key = pygame.key.get_pressed()
             if key[pygame.K_SPACE] and self.jumped == False and self.in_air == False:
+                jump_fx.play()
                 self.vel_y = -30
                 self.jumped = True
             if key[pygame.K_SPACE] == False:
@@ -168,12 +181,14 @@ class Player():
             #check for collisions w/ enemies
             if pygame.sprite.spritecollide(self, enemy_group, False):
                 game_over = -1
-                
+                dead_fx.play()
             #check for collisions w/ spikes and lava
             if pygame.sprite.spritecollide(self, spike_group, False):
                 game_over = -1
+                dead_fx.play()
             if pygame.sprite.spritecollide(self, lava_group, False):
                 game_over = -1
+                dead_fx.play()
                 
             ## collision w/ exit sprite moves char to next level
             if pygame.sprite.spritecollide(self, exit_group, False):
@@ -243,6 +258,7 @@ class World():
                 if tile == 7:
                     coin = Coin(col_count * tile_size + (tile_size // 2), row_count * tile_size + (tile_size // 2))
                     coin_group.add(coin)
+                    
                 if tile == 8:
                     lava = Lava(col_count * tile_size, row_count * tile_size )
                     lava_group.add(lava)
