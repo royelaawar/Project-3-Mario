@@ -1,4 +1,6 @@
 import pygame
+import json
+from os import path
 from pygame.locals import *
 from pygame.sprite import Group
 
@@ -19,62 +21,15 @@ font_score = pygame.font.SysFont('Bauhaus 93', 40)
 white = (255, 255, 255)
 red = (255, 0, 0)
 
-#define game variables
+#define main game variables
 tile_size = 50
 game_over = 0
 main_menu = True
 score = 0
 current_level = 0
-
+level_count = 2
  
-levels = [
 
-    [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 2, 2, 1],
-    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 4, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 7, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 7, 0, 0, 0, 0, 1],
-    [1, 0, 2, 2, 2, 7, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 3, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 1],
-    [1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 7, 0, 0, 0, 0, 2, 0, 1],
-    [1, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 6, 1, 1, 8, 8, 8, 1],
-    [1, 0, 0, 0, 0, 1, 8, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-],
-
-[
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 2, 2, 1],
-    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 5, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 4, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 7, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 7, 0, 0, 0, 0, 1],
-    [1, 0, 2, 2, 2, 7, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 3, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 1],
-    [1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 7, 0, 0, 0, 0, 2, 0, 1],
-    [1, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 6, 6, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-],
-]
 
 #load images
 bg_img = pygame.image.load('game/img/sky.png')
@@ -88,6 +43,25 @@ game_title_img = pygame.image.load('game/img/game_title.png')
 def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
     screen.blit(img, (x, y))
+
+def new_level(current_level):
+    player.reset(100, screen_height - 130)
+    enemy_group.empty()
+    lava_group.empty()
+    spike_group.empty()
+    coin_group.empty()
+    exit_group.empty()
+    
+    #load current_level data and render world
+    # with json:
+    if path.exists(f'game/level{current_level}_data.json'):
+        level_file = open(f'game/level{current_level}_data.json', 'r')
+        world_data = json.load(level_file)
+
+    world = World(world_data)
+
+    return world
+
 
 class Button():
     def __init__(self, x, y, image):
@@ -174,7 +148,7 @@ class Player():
             if pygame.sprite.spritecollide(self, lava_group, False):
                 game_over = -1
                 
-            ## collision w/ exit sprite moves char to next level
+            ## collision w/ exit sprite 
             if pygame.sprite.spritecollide(self, exit_group, False):
                 game_over = 1
 
@@ -323,7 +297,14 @@ lava_group = pygame.sprite.Group()
 coin_group = pygame.sprite.Group()
 exit_group = pygame.sprite.Group()
 
-world = World(levels[current_level])
+# #load current_level data and render world
+# with json:
+
+world_data = []
+if path.exists(f'game/level{current_level}_data.json'):
+    level_file = open(f'game/level{current_level}_data.json', 'r')
+    world_data = json.load(level_file)
+world = World(world_data)
 
 
 ## interface buttons
@@ -342,6 +323,7 @@ while run:
     clock.tick(fps)
     screen.blit(bg_img, (0, 0))
     
+    ## main menu rendering
     if main_menu == True:
         game_title.draw()
         if stop_button.draw():
@@ -351,8 +333,10 @@ while run:
     else:
         world.draw()
         
+        ## if current level is being played
         if game_over == 0:
             enemy_group.update()
+            ## collision w/ coin sprites + adding score counter
             if pygame.sprite.spritecollide(player, coin_group, True):
                 score += 1
             draw_text('X ' + str(score), font_score, white, ((tile_size // 2) + 15), ((tile_size // 2) - 10))
@@ -363,25 +347,39 @@ while run:
         coin_group.draw(screen)
         lava_group.draw(screen)
         exit_group.draw(screen)
+        
         game_over = player.update(game_over)
 
         ## if player has died
         if game_over == -1:
             # draw_text('GAME OVER!', game_over_font, red, (screen_width // 2) - 250, (screen_width // 2))
             if restart_button.draw():
-                player.reset(100, screen_height - 130)
+                world_data = []
+                world = new_level(current_level)
                 game_over = 0
                 score = 0
+                
+        ## if player gets to next level        
         if game_over == 1:
             current_level += 1
-            if current_level < len(levels):
-                # Load the next level
-                world = World(levels[current_level])
-                player.reset(100, screen_height - 130)
+            if current_level <= level_count:
+                # erase current level data and load the next level
+                world_data = []
+                world = new_level(current_level)
                 game_over = 0
             else:
-                # The player has completed all levels, you can handle this as needed
-                run = False
+                if restart_button.draw():
+                    current_level = 1
+                    world_data = []
+                    world = new_level(current_level)
+                    game_over = 0
+                # main_menu = True
+                # game_title.draw()
+                # if stop_button.draw():
+                #     run = False
+                # if start_button.draw():
+                #     main_menu = False
+                #run = False
 
 # draw_grid()
 
