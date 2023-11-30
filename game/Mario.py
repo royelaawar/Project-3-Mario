@@ -31,7 +31,7 @@ game_over = 0
 main_menu = True
 score = 0
 current_level = 0
-level_count = 3
+level_count = 7
  
 
 
@@ -227,7 +227,7 @@ class World():
                     enemy = Enemy(col_count * tile_size, row_count * tile_size - 22)
                     enemy_group.add(enemy)
                 if tile == 5:
-                    exit = Exit(col_count * tile_size, row_count * tile_size -200)
+                    exit = Exit(col_count * tile_size, row_count * tile_size -105)
                     exit_group.add(exit)
                 if tile == 6:
                     spike = Spike(col_count * tile_size, row_count * tile_size + (tile_size // 2))
