@@ -4,7 +4,7 @@ from pygame.sprite import Group
 from pygame import mixer
 
 
-pygame.mixer.pre_init(44100, -16, 18, 512)
+pygame.mixer.pre_init(44100, -16, 25, 512)
 mixer.init()
 pygame.init()
 
@@ -96,7 +96,9 @@ jump_fx.set_volume(0.5)
 coin_fx = pygame.mixer.Sound('game/sound/coin.wav')
 coin_fx.set_volume(0.5)
 dead_fx = pygame.mixer.Sound('game/sound/dead.wav')
-dead_fx.set_volume(0.7)
+dead_fx.set_volume(0.5)
+click_fx = pygame.mixer.Sound('game/sound/Click.wav')
+click_fx.set_volume(0.5)
 
 ## renders text on screen as image
 def draw_text(text, font, text_col, x, y):
@@ -226,8 +228,8 @@ class World():
         self.tile_list = []
 
         #load images
-        grass_img = pygame.image.load('game/img/ground_grassy_1.png')
-        brick_img = pygame.image.load('game/img/brick.png')
+        grass_img = pygame.image.load('game/img/ground_grassy_0.png')
+        brick_img = pygame.image.load('game/img/brick1.png')
         
 
         row_count = 0
@@ -365,8 +367,10 @@ while run:
     if main_menu == True:
         game_title.draw()
         if stop_button.draw():
+            click_fx.play()
             run = False
         if start_button.draw():
+            click_fx.play()
             main_menu = False
     else:
         world.draw()
@@ -393,6 +397,7 @@ while run:
                 player.reset(100, screen_height - 130)
                 game_over = 0
                 score = 0
+                click_fx.play()
         if game_over == 1:
             current_level += 1
             if current_level < len(levels):
