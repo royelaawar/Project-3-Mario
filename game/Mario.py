@@ -300,7 +300,7 @@ exit_group = pygame.sprite.Group()
 # #load current_level data and render world
 # with json:
 
-world_data = []
+
 if path.exists(f'game/level{current_level}_data.json'):
     level_file = open(f'game/level{current_level}_data.json', 'r')
     world_data = json.load(level_file)
@@ -313,7 +313,7 @@ restart_button = Button(screen_width // 2 - 250, screen_height // 2 - 100, game_
 start_button = Button(screen_width // 2 - 350, screen_height // 2 - 50, start_img)
 stop_button = Button(screen_width // 2 , screen_height // 2 - 50, stop_img)
 score_count_coin = Coin(tile_size // 2, tile_size // 2)
-coin_group.add(score_count_coin)
+
 
 
 ### GAME LOOP
@@ -337,6 +337,7 @@ while run:
         if game_over == 0:
             enemy_group.update()
             ## collision w/ coin sprites + adding score counter
+            coin_group.add(score_count_coin)
             if pygame.sprite.spritecollide(player, coin_group, True):
                 score += 1
             draw_text('X ' + str(score), font_score, white, ((tile_size // 2) + 15), ((tile_size // 2) - 10))
@@ -369,7 +370,7 @@ while run:
                 game_over = 0
             else:
                 if restart_button.draw():
-                    current_level = 1
+                    current_level = 0
                     world_data = []
                     world = new_level(current_level)
                     game_over = 0
