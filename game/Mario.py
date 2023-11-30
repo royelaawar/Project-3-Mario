@@ -384,15 +384,18 @@ while run:
                 game_over = 0
                 score = 0
                 click_fx.play()
+                
+        ## if player gets to next level        
         if game_over == 1:
             current_level += 1
             if current_level <= level_count:
-                # erase current level data and load the next level
+                # if next level exists, erase current level data and load the next level
                 world_data = []
                 world = new_level(current_level)
                 game_over = 0
+                # if end of game reached or restart button clicked, loop back to level 0
             else:
-                if restart_button.draw():
+                if current_level > level_count:
                     current_level = 0
                     world_data = []
                     world = new_level(current_level)
