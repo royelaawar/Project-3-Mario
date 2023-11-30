@@ -3,7 +3,9 @@ import json
 from os import path
 from pygame.locals import *
 from pygame.sprite import Group
+import imageio
 from pygame import mixer
+
 
 
 pygame.mixer.pre_init(44100, -16, 25, 512)
@@ -33,8 +35,6 @@ score = 0
 current_level = 0
 level_count = 7
  
-
-
 #load images
 bg_img = pygame.image.load('game/img/sky.png')
 restart_img = pygame.image.load('game/img/restart.png')
