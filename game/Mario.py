@@ -4,7 +4,7 @@ from pygame.sprite import Group
 from pygame import mixer
 
 
-pygame.mixer.pre_init(44100, -16, 10, 512)
+pygame.mixer.pre_init(44100, -16, 18, 512)
 mixer.init()
 pygame.init()
 
@@ -88,7 +88,9 @@ stop_img = pygame.image.load('game/img/stop.png')
 game_over_img = pygame.image.load('game/img/game_over_alt.png')
 game_title_img = pygame.image.load('game/img/game_title.png')
 
-#load sounds
+# #load sounds
+pygame.mixer.music.load('game/sound/Chocobo Theme 8bit Long Version.mp3')
+pygame.mixer.music.play(-1, 0.0, 0 )
 jump_fx = pygame.mixer.Sound('game/sound/jump.flac')
 jump_fx.set_volume(0.5)
 coin_fx = pygame.mixer.Sound('game/sound/coin.wav')
@@ -373,6 +375,7 @@ while run:
             enemy_group.update()
             if pygame.sprite.spritecollide(player, coin_group, True):
                 score += 1
+                coin_fx.play()
             draw_text('X ' + str(score), font_score, white, ((tile_size // 2) + 15), ((tile_size // 2) - 10))
             
         enemy_group.update()
