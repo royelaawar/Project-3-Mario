@@ -1,7 +1,11 @@
 import pygame
 from pygame.locals import *
 from pygame.sprite import Group
+from pygame import mixer
 
+
+pygame.mixer.pre_init(44100, -16, 25, 512)
+mixer.init()
 pygame.init()
 
 clock = pygame.time.Clock()
@@ -84,6 +88,18 @@ stop_img = pygame.image.load('game/img/stop.png')
 game_over_img = pygame.image.load('game/img/game_over_alt.png')
 game_title_img = pygame.image.load('game/img/game_title.png')
 
+# #load sounds
+pygame.mixer.music.load('game/sound/Chocobo Theme 8bit Long Version.mp3')
+pygame.mixer.music.play(-1, 0.0, 0 )
+jump_fx = pygame.mixer.Sound('game/sound/jump.flac')
+jump_fx.set_volume(0.5)
+coin_fx = pygame.mixer.Sound('game/sound/coin.wav')
+coin_fx.set_volume(0.5)
+dead_fx = pygame.mixer.Sound('game/sound/dead.wav')
+dead_fx.set_volume(0.5)
+click_fx = pygame.mixer.Sound('game/sound/Click.wav')
+click_fx.set_volume(0.5)
+
 ## renders text on screen as image
 def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
@@ -131,6 +147,7 @@ class Player():
        
             key = pygame.key.get_pressed()
             if key[pygame.K_SPACE] and self.jumped == False and self.in_air == False:
+                jump_fx.play()
                 self.vel_y = -30
                 self.jumped = True
             if key[pygame.K_SPACE] == False:
@@ -168,12 +185,14 @@ class Player():
             #check for collisions w/ enemies
             if pygame.sprite.spritecollide(self, enemy_group, False):
                 game_over = -1
-                
+                dead_fx.play()
             #check for collisions w/ spikes and lava
             if pygame.sprite.spritecollide(self, spike_group, False):
                 game_over = -1
+                dead_fx.play()
             if pygame.sprite.spritecollide(self, lava_group, False):
                 game_over = -1
+                dead_fx.play()
                 
             ## collision w/ exit sprite moves char to next level
             if pygame.sprite.spritecollide(self, exit_group, False):
@@ -209,8 +228,8 @@ class World():
         self.tile_list = []
 
         #load images
-        grass_img = pygame.image.load('game/img/ground_grassy_1.png')
-        brick_img = pygame.image.load('game/img/brick.png')
+        grass_img = pygame.image.load('game/img/ground_grassy_0.png')
+        brick_img = pygame.image.load('game/img/brick1.png')
         
 
         row_count = 0
@@ -243,6 +262,7 @@ class World():
                 if tile == 7:
                     coin = Coin(col_count * tile_size + (tile_size // 2), row_count * tile_size + (tile_size // 2))
                     coin_group.add(coin)
+                    
                 if tile == 8:
                     lava = Lava(col_count * tile_size, row_count * tile_size )
                     lava_group.add(lava)
@@ -259,8 +279,8 @@ class World():
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('game/img/enemy.png')
-        scaled_image = pygame.transform.scale(self.image, (65, 85))
+        self.image = pygame.image.load('game/img/enemy2.png')
+        scaled_image = pygame.transform.scale(self.image, (70, 95))
         self.image = scaled_image
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -281,7 +301,7 @@ class Enemy(pygame.sprite.Sprite):
 class Exit(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('game/img/exit.png')
+        self.image = pygame.image.load('game/img/exit1.png')
         scaled_image = pygame.transform.scale(self.image, (65, 85))
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -347,8 +367,10 @@ while run:
     if main_menu == True:
         game_title.draw()
         if stop_button.draw():
+            click_fx.play()
             run = False
         if start_button.draw():
+            click_fx.play()
             main_menu = False
     else:
         world.draw()
@@ -357,6 +379,7 @@ while run:
             enemy_group.update()
             if pygame.sprite.spritecollide(player, coin_group, True):
                 score += 1
+                coin_fx.play()
             draw_text('X ' + str(score), font_score, white, ((tile_size // 2) + 15), ((tile_size // 2) - 10))
             
         enemy_group.update()
@@ -374,6 +397,7 @@ while run:
                 player.reset(100, screen_height - 130)
                 game_over = 0
                 score = 0
+                click_fx.play()
         if game_over == 1:
             current_level += 1
             if current_level < len(levels):
