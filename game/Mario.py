@@ -279,8 +279,8 @@ class World():
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('game/img/enemy.png')
-        scaled_image = pygame.transform.scale(self.image, (65, 85))
+        self.image = pygame.image.load('game/img/enemy2.png')
+        scaled_image = pygame.transform.scale(self.image, (70, 95))
         self.image = scaled_image
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -301,7 +301,7 @@ class Enemy(pygame.sprite.Sprite):
 class Exit(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('game/img/exit.png')
+        self.image = pygame.image.load('game/img/exit1.png')
         scaled_image = pygame.transform.scale(self.image, (65, 85))
         self.rect = self.image.get_rect()
         self.rect.x = x
