@@ -395,7 +395,7 @@ while run:
                 game_over = 0
                 # if end of game reached or restart button clicked, loop back to level 0
             else:
-                if current_level > level_count:
+                if current_level > level_count or restart_button.draw():
                     current_level = 0
                     world_data = []
                     world = new_level(current_level)
