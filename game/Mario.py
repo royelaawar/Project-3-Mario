@@ -3,7 +3,7 @@ import json
 from os import path
 from pygame.locals import *
 from pygame.sprite import Group
-import imageio
+# import imageio
 from pygame import mixer
 
 
