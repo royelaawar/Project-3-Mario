@@ -27,7 +27,7 @@ game_over = 0
 main_menu = True
 score = 0
 current_level = 0
-level_count = 2
+level_count = 3
  
 
 
