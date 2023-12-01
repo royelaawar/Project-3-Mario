@@ -443,6 +443,8 @@ while run:
             draw_text('X ' + str(score), font_score, white, ((tile_size // 2) + 15), ((tile_size // 2) - 10))
             ##draws heart/life count
             draw_text('X ' + str(heart_count), font_score, white, ((tile_size // 2) + 120), ((tile_size // 2) - 10))
+            ##draws current level via level_count
+            draw_text('Level:' + str(current_level), font_score, white, ((tile_size // 2)+850), ((tile_size // 2) - 10))
             
         ## draws all sprite groups for current_level's world_data
         enemy_group.update()
