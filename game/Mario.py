@@ -231,7 +231,10 @@ class Player():
 
         #draw player onto the screen
         screen.blit(self.image, self.rect)
-        pygame.draw.rect(screen, (255, 255, 255), self.rect, 1)
+        if not self.invincible: 
+            pygame.draw.rect(screen, (255, 255, 255), self.rect, 1)
+        elif self.invincible == True:
+            pygame.draw.rect(screen, (255, 0, 0), self.rect, 1)
 
         return game_over
 
