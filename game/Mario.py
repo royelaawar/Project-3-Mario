@@ -60,6 +60,24 @@ dead_fx.set_volume(0.5)
 click_fx = pygame.mixer.Sound('game/sound/Click.wav')
 click_fx.set_volume(0.5)
 
+##function toggles mute for bg music 
+def toggle_mute():
+    if pygame.mixer.music.get_volume() > 0:
+        pygame.mixer.music.set_volume(0)
+    else:
+        pygame.mixer.music.set_volume(0.5)
+        
+##function triggers game restart (i.e. world_data/hearts/score reset and current_level = 0):
+def restart_game():
+    global current_level, heart_count, game_over, score
+    current_level = 0
+    heart_count = 3
+    game_over = 0
+    score = 0
+    world = new_level(current_level)
+
+
+
 # renders text on screen as image
 def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
