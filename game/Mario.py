@@ -33,7 +33,7 @@ game_over = 0
 main_menu = True
 score = 0
 current_level = 0
-level_count = 3
+level_count = 7
 heart_count = 3
 #difficulty = [0, 1, 2]
  
@@ -138,15 +138,17 @@ class Player():
     def __init__(self, x, y):
        self.reset(x, y)
        self.invincible = False
+       self.no_clip = False
        
     def update(self, game_over):
         dx = 0
         dy = 0
         
-        ##if game is being played, run update as such:
+        ##if game is being played, run the following:
         if game_over == 0:
             ## KEYDOWN EVENT TRIGGERS
             key = pygame.key.get_pressed()
+            #movement triggers
             if key[pygame.K_SPACE] and self.jumped == False and self.in_air == False:
                 jump_fx.play()
                 self.vel_y = -30
@@ -167,6 +169,9 @@ class Player():
             # i key toggles invincibility 
             if key[pygame.K_i]:
                 self.invincible = not self.invincible
+            # n key toggles no clip mode (bricks)
+            if key[pygame.K_n]:
+                self.no_clip = not self.no_clip
 
           
             #add gravity
@@ -177,22 +182,28 @@ class Player():
 
             self.in_air = True
             
-            #check for collision
-            for tile in world.tile_list:
-                #check for collision in x direction
-                if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.rect.width, self.rect.height):
-                    dx = 0
-                #check for collision in y direction
-                if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.rect.width, self.rect.height):
-                    #check if below the ground i.e. jumping
-                    if self.vel_y < 0:
-                        dy = tile[1].bottom - self.rect.top
-                        self.vel_y = 0
-                    #check if above the ground i.e. falling
-                    elif self.vel_y >= 0:
-                        dy = tile[1].top - self.rect.bottom
-                        self.vel_y = 0
-                        self.in_air = False
+            #check for collision w/ brick/platform tiles
+            if not self.no_clip or not self.jumped:
+                for tile in world.tile_list:
+                    #check for collision in x direction
+                    if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.rect.width, self.rect.height):
+                        dx = 0
+                    #check for collision in y direction
+                    if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.rect.width, self.rect.height):
+                        #check if below the ground i.e. jumping
+                        if self.vel_y < 0:
+                            dy = tile[1].bottom - self.rect.top
+                            self.vel_y = 0
+                        #check if above the ground i.e. falling
+                        elif self.vel_y >= 0:
+                            dy = tile[1].top - self.rect.bottom
+                            self.vel_y = 0
+                            self.in_air = False
+                            
+            # Reset no_clip on landing
+            if not self.in_air:
+                self.jumped = False
+                self.no_clip = False  
 
             ##COLLISIONS:
             #check for collisions w/ enemies
@@ -205,21 +216,6 @@ class Player():
                     dead_fx.play()
 
             
-            ##invincibility with nested ifs
-            # if not self.invincible:
-            #     if pygame.sprite.spritecollide(self, enemy_group, False):
-            #         game_over = -1
-            #         dead_fx.play()
-            # #check for collisions w/ spikes and lava
-            # if not self.invincible:
-            #     if pygame.sprite.spritecollide(self, spike_group, False):
-            #         game_over = -1
-            #         dead_fx.play()
-            # if not self.invincible:
-            #     if pygame.sprite.spritecollide(self, lava_group, False):
-            #         game_over = -1
-            #         dead_fx.play()
-                
             ## collision w/ exit sprite 
             if pygame.sprite.spritecollide(self, exit_group, False):
                 game_over = 1
