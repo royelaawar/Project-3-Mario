@@ -237,7 +237,7 @@ class Player():
 
     def reset(self, x, y):
         img = pygame.image.load('game/img/panda.png')
-        self.image = pygame.transform.scale(img, (50, 50))
+        self.image = pygame.transform.scale(img, (50, 80))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
