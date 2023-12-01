@@ -34,10 +34,10 @@ game_over = 0
 main_menu = True
 score = 0
 current_level = 0
-level_count = 7
+level_count = 10
 heart_count = 3
 #difficulty = [0, 1, 2]
- 
+
 
 #load images
 bg_img = pygame.image.load('game/img/sky.png')
@@ -237,7 +237,7 @@ class Player():
 
     def reset(self, x, y):
         img = pygame.image.load('game/img/panda.png')
-        self.image = pygame.transform.scale(img, (50, 80))
+        self.image = pygame.transform.scale(img, (50, 60))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
