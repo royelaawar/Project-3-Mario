@@ -6,6 +6,7 @@ from pygame.sprite import Group
 from pygame import mixer
 
 
+
 pygame.mixer.pre_init(44100, -16, 25, 512)
 mixer.init()
 pygame.init()
@@ -34,11 +35,12 @@ main_menu = True
 score = 0
 current_level = 0
 level_count = 7
+<<<<<<< HEAD
 heart_count = 3
 #difficulty = [0, 1, 2]
+=======
+>>>>>>> 81df4e540b9eb76c489750e08388dba67934e349
  
-
-
 #load images
 bg_img = pygame.image.load('game/img/sky.png')
 restart_img = pygame.image.load('game/img/restart.png')
@@ -277,7 +279,7 @@ class World():
                     enemy = Enemy(col_count * tile_size, row_count * tile_size - 22)
                     enemy_group.add(enemy)
                 if tile == 5:
-                    exit = Exit(col_count * tile_size, row_count * tile_size -200)
+                    exit = Exit(col_count * tile_size, row_count * tile_size -105)
                     exit_group.add(exit)
                 if tile == 6:
                     spike = Spike(col_count * tile_size, row_count * tile_size + (tile_size // 2))
