@@ -35,11 +35,8 @@ main_menu = True
 score = 0
 current_level = 0
 level_count = 7
-<<<<<<< HEAD
 heart_count = 3
 #difficulty = [0, 1, 2]
-=======
->>>>>>> 81df4e540b9eb76c489750e08388dba67934e349
  
 #load images
 bg_img = pygame.image.load('game/img/sky.png')
