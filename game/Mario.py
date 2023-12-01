@@ -236,11 +236,23 @@ class Player():
         return game_over
 
     def reset(self, x, y):
+        # Load the original image
         img = pygame.image.load('game/img/panda.png')
-        self.image = pygame.transform.scale(img, (50, 60))
+        original_width, original_height = img.get_size()
+        # set fixed height
+        fixed_height = 50
+        # Calculate the scaling factor to maintain the aspect ratio
+        scale_factor = fixed_height / original_height
+        # Calculate new width based on the aspect ratio
+        new_width = int(original_width * scale_factor)
+        # Scale the image to the new dimensions
+        self.image = pygame.transform.scale(img, (new_width, fixed_height))
+        # Create a rect with the new size
         self.rect = self.image.get_rect()
+        # Set position
         self.rect.x = x
         self.rect.y = y
+        
         self.vel_y = 0
         self.jumped = False
         self.in_air = True
