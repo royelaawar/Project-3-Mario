@@ -101,7 +101,6 @@ def new_level(current_level):
         world_data = []
 
     world = World(world_data)
-
     return world
 
 ## CLASSES (btns, Player instance, World, sprites for game tiles)
@@ -138,13 +137,15 @@ class Button():
 class Player():
     def __init__(self, x, y):
        self.reset(x, y)
-
+       self.invincible = False
+       
     def update(self, game_over):
         dx = 0
         dy = 0
         
+        ##if game is being played, run update as such:
         if game_over == 0:
-            
+            ## KEYDOWN EVENT TRIGGERS
             key = pygame.key.get_pressed()
             if key[pygame.K_SPACE] and self.jumped == False and self.in_air == False:
                 jump_fx.play()
@@ -160,11 +161,13 @@ class Player():
                 dx += 5
             if key[pygame.K_d]:
                 dx += 5
-            # toggle volume with m and v keys
+            # toggle volume with m key
             if key[pygame.K_m]:
-                pygame.mixer.music.set_volume(0)
-            if key[pygame.K_p]:
-                pygame.mixer.music.set_volume(0.5)
+                toggle_mute()
+            # i key toggles invincibility 
+            if key[pygame.K_i]:
+                self.invincible = not self.invincible
+
           
             #add gravity
             self.vel_y += 1
@@ -173,6 +176,7 @@ class Player():
             dy += self.vel_y
 
             self.in_air = True
+            
             #check for collision
             for tile in world.tile_list:
                 #check for collision in x direction
@@ -192,16 +196,29 @@ class Player():
 
             ##COLLISIONS:
             #check for collisions w/ enemies
-            if pygame.sprite.spritecollide(self, enemy_group, False):
-                game_over = -1
-                dead_fx.play()
-            #check for collisions w/ spikes and lava
-            if pygame.sprite.spritecollide(self, spike_group, False):
-                game_over = -1
-                dead_fx.play()
-            if pygame.sprite.spritecollide(self, lava_group, False):
-                game_over = -1
-                dead_fx.play()
+            if not self.invincible:
+                if (pygame.sprite.spritecollide(self, enemy_group, False) or 
+                    pygame.sprite.spritecollide(self, spike_group, False) or 
+                    pygame.sprite.spritecollide(self, lava_group, False)):
+                    
+                    game_over = -1
+                    dead_fx.play()
+
+            
+            ##invincibility with nested ifs
+            # if not self.invincible:
+            #     if pygame.sprite.spritecollide(self, enemy_group, False):
+            #         game_over = -1
+            #         dead_fx.play()
+            # #check for collisions w/ spikes and lava
+            # if not self.invincible:
+            #     if pygame.sprite.spritecollide(self, spike_group, False):
+            #         game_over = -1
+            #         dead_fx.play()
+            # if not self.invincible:
+            #     if pygame.sprite.spritecollide(self, lava_group, False):
+            #         game_over = -1
+            #         dead_fx.play()
                 
             ## collision w/ exit sprite 
             if pygame.sprite.spritecollide(self, exit_group, False):
@@ -458,13 +475,7 @@ while run:
                     world_data = []
                     world = new_level(current_level)
                     game_over = 0
-                # main_menu = True
-                # game_title.draw()
-                # if stop_button.draw():
-                #     run = False
-                # if start_button.draw():
-                #     main_menu = False
-                #run = False
+
 
 
     for event in pygame.event.get():
