@@ -289,7 +289,7 @@ class World():
                     enemy = Enemy(col_count * tile_size, row_count * tile_size - 22)
                     enemy_group.add(enemy)
                 if tile == 5:
-                    exit = Exit(col_count * tile_size, row_count * tile_size -105)
+                    exit = Exit(col_count * tile_size, row_count * tile_size - 50)
                     exit_group.add(exit)
                 if tile == 6:
                     spike = Spike(col_count * tile_size, row_count * tile_size + (tile_size // 2))
@@ -337,7 +337,8 @@ class Exit(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('game/img/exit1.png')
-        scaled_image = pygame.transform.scale(self.image, (65, 85))
+        scaled_image = pygame.transform.scale(self.image, (tile_size * 1.5, tile_size * 2))
+        self.image = scaled_image
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
