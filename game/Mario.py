@@ -38,6 +38,7 @@ level_count = 7
 heart_count = 3
 #difficulty = [0, 1, 2]
  
+
 #load images
 bg_img = pygame.image.load('game/img/sky.png')
 restart_img = pygame.image.load('game/img/restart.png')
@@ -73,7 +74,9 @@ def restart_game():
     heart_count = 3
     game_over = 0
     score = 0
+    world_data = []
     world = new_level(current_level)
+    click_fx.play()  
 
 
 
@@ -445,14 +448,16 @@ while run:
         ## if player has died
         if game_over == -1:
             # draw_text('YOU DIED!', game_over_font, red, (screen_width // 2) - 250, (screen_width // 2))
-            
-            if restart_button.draw():
-                world_data = []
-                world = new_level(current_level)
+            if heart_count > 0:
                 heart_count -= 1
                 game_over = 0
-                score = 0
-                click_fx.play()
+                world_data = []  
+                world = new_level(current_level)
+                click_fx.play()  
+            elif heart_count == 0:
+                if restart_button.draw():
+                    restart_game()
+
                 
         ## if player gets to next level (via collision with exit sprite)        
         if game_over == 1:
