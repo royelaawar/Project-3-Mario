@@ -97,8 +97,8 @@ def new_level(current_level):
     if path.exists(f'game/level{current_level}_data.json'):
         level_file = open(f'game/level{current_level}_data.json', 'r')
         world_data = json.load(level_file)
-    elif not path.exists(f'game/level{current_level}_data.json'):
-        world_data = []
+    # elif not path.exists(f'game/level{current_level}_data.json'):
+    #     world_data = []
 
     world = World(world_data)
     return world
@@ -151,7 +151,7 @@ class Player():
             #movement triggers
             if key[pygame.K_SPACE] and self.jumped == False and self.in_air == False:
                 jump_fx.play()
-                self.vel_y = -30
+                self.vel_y = -25
                 self.jumped = True
             if key[pygame.K_SPACE] == False:
                 self.jumped = False
@@ -452,9 +452,15 @@ while run:
                 world_data = []  
                 world = new_level(current_level)
                 click_fx.play()  
-            elif heart_count == 0:
+            elif heart_count < 1:
                 if restart_button.draw():
-                    restart_game()
+                    current_level = 0    
+                    world_data = []  
+                    world = new_level(current_level)
+                    heart_count = 3
+                    score = 0
+                    game_over = 0
+                    click_fx.play()  
 
                 
         ## if player gets to next level (via collision with exit sprite)        
@@ -468,7 +474,7 @@ while run:
                 
                 # if end of game reached or restart button clicked, loop back to level 0
             else:
-                if current_level > level_count or restart_button.draw():
+                if current_level > level_count:
                     current_level = 0
                     world_data = []
                     world = new_level(current_level)
